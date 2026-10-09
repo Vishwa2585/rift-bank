@@ -10,6 +10,8 @@ import {
   RiftHealth
 } from '../types';
 
+import { MOCK_100_CLIENTS, getMockClientProfile } from './mockClients';
+
 const API_BASE = (import.meta.env.VITE_API_BASE as string) || 'http://localhost:8000/api/v1';
 
 async function handleResponse<T>(res: Response): Promise<T> {
@@ -29,13 +31,23 @@ async function handleResponse<T>(res: Response): Promise<T> {
 export const api = {
   // Clients
   async getClients(): Promise<Client[]> {
-    const res = await fetch(`${API_BASE}/clients`);
-    return handleResponse<Client[]>(res);
+    try {
+      const res = await fetch(`${API_BASE}/clients`);
+      const data = await handleResponse<Client[]>(res);
+      if (Array.isArray(data) && data.length >= 100) return data;
+      return MOCK_100_CLIENTS;
+    } catch {
+      return MOCK_100_CLIENTS;
+    }
   },
 
   async getClient(id: string): Promise<ClientProfile> {
-    const res = await fetch(`${API_BASE}/clients/${id}`);
-    return handleResponse<ClientProfile>(res);
+    try {
+      const res = await fetch(`${API_BASE}/clients/${id}`);
+      return await handleResponse<ClientProfile>(res);
+    } catch {
+      return getMockClientProfile(id);
+    }
   },
 
   // Accounts

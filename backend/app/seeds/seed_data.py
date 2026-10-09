@@ -271,8 +271,35 @@ def seed_database(db: Session, force: bool = False):
                     "address": "0x976EA74026E726554dB657fA54763abd0C3a0aa9"
                 }
             ]
-        }
-    ]
+    # Generate clients 7 to 100 programmatically
+    first_names = ['Alexander', 'Isabella', 'Cassian', 'Zara', 'Adrian', 'Helena', 'Marcus', 'Elena', 'Kaelen', 'Siddharth', 'Amara', 'Dante', 'Seraphina', 'Viktor', 'Aurelia', 'Dorian', 'Valerie', 'Julian', 'Genevieve', 'Lucian', 'Celeste', 'Dominic', 'Evangeline', 'Gideon', 'Nicolette', 'Sebastian', 'Freya', 'Thaddeus', 'Rosalind', 'Xavier']
+    last_names = ['Veyron', 'Laurent', 'Wolfe', 'Ellington', 'Blackwell', 'Ashford', 'Vance', 'Rostova', 'Sterling', 'Oberoi', 'Cross', 'Novak', 'Mercer', 'Kovacs', 'Vanderbilt', 'Sinclair', 'Rutherford', 'Hawthorne', 'Montgomery', 'Kensington']
+    categories = ['Technology Founder', 'Global Investment Principal', 'Digital Asset Fund Manager', 'Private Equity Investor', 'Family Office Principal', 'Corporate Treasury Executive']
+
+    for i in range(7, 101):
+        fn = first_names[(i * 7) % len(first_names)]
+        ln = last_names[(i * 11) % len(last_names)]
+        nw_billions = round(1.2 + ((i * 13) % 44), 1)
+        clients_data.append({
+            "id": f"cli_demo_user_{i:03d}",
+            "name": f"{fn} {ln}",
+            "category": categories[i % len(categories)],
+            "headline": f"Principal & Managing Director, {ln} Global Group ({i})",
+            "net_worth_display": f"${nw_billions} billion",
+            "net_worth_units": int(nw_billions * 100_000_000_000_00),
+            "accounts": [
+                {
+                    "id": f"acc_demo_{i}_usd",
+                    "account_number": f"RF-{1000 + i * 17}-USD",
+                    "account_name": f"{ln} Private Treasury Vault",
+                    "account_type": "TREASURY" if i % 2 == 0 else "LIQUIDITY",
+                    "asset": "TEST_USD",
+                    "amount_display": f"{nw_billions * 0.15:.2f}",
+                    "chain_id": 31338 if i % 3 == 0 else 31337,
+                    "address": f"0x{(1000000000000000000000000000000000000000 + i):040x}"
+                }
+            ]
+        })
 
     for cdata in clients_data:
         client = Client(
