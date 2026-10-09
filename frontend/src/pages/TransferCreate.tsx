@@ -13,6 +13,7 @@ import {
 import { GlassCard } from '../components/GlassCard';
 import { Client, Account, Transfer } from '../types';
 import { api } from '../services/api';
+import { riftEngine } from '../services/riftEngine';
 
 interface TransferCreateProps {
   clients: Client[];
@@ -69,6 +70,12 @@ export const TransferCreate: React.FC<TransferCreateProps> = ({
 
   const handleSubmit = async () => {
     setError(null);
+
+    if (riftEngine.getState().transfersHeld) {
+      setError('LOCAL DEMO ACTION: New transfer intents are currently HELD by RIFT Emergency Security Policy.');
+      return;
+    }
+
     setSubmitting(true);
     try {
       const destination = transferType === 'INTERNAL' ? destAccountId : destAddress;

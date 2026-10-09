@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { SimulationNoticeBanner } from './components/SimulationNoticeBanner';
 import { Navbar, ScreenId } from './components/Navbar';
+import { CommandRoom } from './pages/CommandRoom';
+import { ReplayLab } from './pages/ReplayLab';
 import { BankOverview } from './pages/BankOverview';
 import { ClientDirectory } from './pages/ClientDirectory';
 import { ClientProfile } from './pages/ClientProfile';
@@ -20,7 +22,7 @@ import { Client, Transfer, RiftHealth } from './types';
 import { api } from './services/api';
 
 export const App: React.FC = () => {
-  const [currentScreen, setCurrentScreen] = useState<ScreenId>('overview');
+  const [currentScreen, setCurrentScreen] = useState<ScreenId>('command_room');
   const [clients, setClients] = useState<Client[]>([]);
   const [selectedClientId, setSelectedClientId] = useState<string>('cli_alexander_veyron');
   const [transfers, setTransfers] = useState<Transfer[]>([]);
@@ -122,6 +124,10 @@ export const App: React.FC = () => {
 
       {/* Main Body - Full Screen Expansive Layout */}
       <main className="flex-1 w-full px-3 sm:px-6 lg:px-8 xl:px-12 py-4 sm:py-6">
+        {currentScreen === 'command_room' && <CommandRoom />}
+
+        {currentScreen === 'replay_lab' && <ReplayLab />}
+
         {currentScreen === 'overview' && (
           <BankOverview
             clients={clients}

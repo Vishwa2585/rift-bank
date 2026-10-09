@@ -24,6 +24,8 @@ import {
 import { RiftHealth, Client } from '../types';
 
 export type ScreenId =
+  | 'command_room'
+  | 'replay_lab'
   | 'overview'
   | 'clients'
   | 'profile'
@@ -82,6 +84,8 @@ export const Navbar: React.FC<NavbarProps> = ({
   };
 
   const navItems = [
+    { id: 'command_room', label: 'Command Room', icon: ShieldAlert, desc: 'CSB-01 Exploit Engine & Fracture Map' },
+    { id: 'replay_lab', label: 'Replay Lab', icon: PlaySquare, desc: 'Counterfactual replay & rule toggles' },
     { id: 'overview', label: 'Overview', icon: Building2, desc: 'Executive banking dashboard' },
     { id: 'clients', label: 'Clients', icon: Users, desc: '6 High-net-worth fictional clients' },
     { id: 'profile', label: 'Profile', icon: Eye, desc: 'Client portfolio & asset allocations' },
