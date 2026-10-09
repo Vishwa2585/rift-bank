@@ -42,8 +42,8 @@ export const AccountLedger: React.FC = () => {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
-          <h2 className="text-xl font-bold text-white">Double-Entry Financial Ledger</h2>
-          <p className="text-xs text-slate-400">
+          <h2 className="text-xl font-bold text-slate-900 dark:text-white">Double-Entry Financial Ledger</h2>
+          <p className="text-xs text-slate-500 dark:text-slate-400">
             Immutable journal records enforcing atomic double-entry balance equality (Debits == Credits).
           </p>
         </div>
@@ -58,7 +58,7 @@ export const AccountLedger: React.FC = () => {
           </button>
           <button
             onClick={loadData}
-            className="p-1.5 rounded-xl border border-white/10 text-slate-400 hover:text-white hover:bg-white/5 transition"
+            className="p-1.5 rounded-xl border border-slate-200 dark:border-white/10 text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/5 transition"
             title="Refresh"
           >
             <RefreshCw className="w-4 h-4" />
@@ -68,20 +68,20 @@ export const AccountLedger: React.FC = () => {
 
       {/* Real-Time Double-Entry Audit Summary Box */}
       {balanceCheck && (
-        <GlassCard className="p-4 border-emerald-500/30 bg-emerald-950/20">
+        <GlassCard className="p-4 border-emerald-500/30 bg-emerald-500/10 dark:bg-emerald-950/20">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div className="flex items-center space-x-3">
-              <div className="p-2.5 rounded-xl bg-emerald-500/20 text-emerald-400 border border-emerald-500/40">
+              <div className="p-2.5 rounded-xl bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border border-emerald-500/40">
                 <CheckCircle2 className="w-5 h-5" />
               </div>
               <div>
                 <div className="flex items-center space-x-2">
-                  <span className="font-bold text-sm text-emerald-300">
+                  <span className="font-bold text-sm text-emerald-700 dark:text-emerald-300">
                     Double-Entry Integrity Confirmed (Zero Discrepancy)
                   </span>
                   <StatusBadge status={balanceCheck.status} />
                 </div>
-                <p className="text-xs text-slate-300 mt-0.5 font-mono">
+                <p className="text-xs text-slate-600 dark:text-slate-300 mt-0.5 font-mono">
                   All atomic journal transactions across system and client accounts are balanced.
                 </p>
               </div>
@@ -90,8 +90,8 @@ export const AccountLedger: React.FC = () => {
             <div className="flex items-center space-x-4 text-xs font-mono">
               {balanceCheck.assets_audited.map((a) => (
                 <div key={a.asset} className="text-right">
-                  <div className="text-slate-400">{a.asset} Balancing</div>
-                  <div className="text-emerald-400 font-bold">
+                  <div className="text-slate-500 dark:text-slate-400">{a.asset} Balancing</div>
+                  <div className="text-emerald-600 dark:text-emerald-400 font-bold">
                     Diff: {a.discrepancy_base_units === 0 ? '0.00' : a.discrepancy_base_units} units
                   </div>
                 </div>
@@ -103,18 +103,18 @@ export const AccountLedger: React.FC = () => {
 
       {/* Filter and Ledger Table */}
       <GlassCard className="p-0 overflow-hidden">
-        <div className="p-4 border-b border-white/10 flex items-center justify-between">
+        <div className="p-4 border-b border-slate-200 dark:border-white/10 flex items-center justify-between">
           <div className="flex items-center space-x-2">
-            <BookOpen className="w-4 h-4 text-cyan-400" />
-            <h3 className="text-sm font-bold text-white">General Ledger Journal Entries</h3>
+            <BookOpen className="w-4 h-4 text-cyan-600 dark:text-cyan-400" />
+            <h3 className="text-sm font-bold text-slate-900 dark:text-white">General Ledger Journal Entries</h3>
           </div>
 
           <div className="flex items-center space-x-2 text-xs">
-            <span className="text-slate-400">Filter Asset:</span>
+            <span className="text-slate-500 dark:text-slate-400">Filter Asset:</span>
             <select
               value={assetFilter}
               onChange={(e) => setAssetFilter(e.target.value)}
-              className="bg-slate-900 border border-white/10 rounded-lg px-2 py-1 text-slate-200"
+              className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-white/10 rounded-lg px-2 py-1 text-slate-800 dark:text-slate-200"
             >
               <option value="ALL">All Assets</option>
               <option value="TEST_USD">TEST_USD</option>
@@ -127,7 +127,7 @@ export const AccountLedger: React.FC = () => {
 
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs font-mono">
-            <thead className="bg-white/5 border-b border-white/10 text-slate-400">
+            <thead className="bg-slate-100 dark:bg-white/5 border-b border-slate-200 dark:border-white/10 text-slate-500 dark:text-slate-400">
               <tr>
                 <th className="px-4 py-3">Entry ID</th>
                 <th className="px-4 py-3">Tx / Batch ID</th>
@@ -139,33 +139,33 @@ export const AccountLedger: React.FC = () => {
                 <th className="px-4 py-3">Timestamp</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-white/5">
+            <tbody className="divide-y divide-slate-100 dark:divide-white/5">
               {filteredEntries.map((e) => {
                 const isDebit = e.direction === 'DEBIT';
                 return (
-                  <tr key={e.id} className="hover:bg-white/[0.02] transition">
-                    <td className="px-4 py-3 text-cyan-400">{e.id}</td>
-                    <td className="px-4 py-3 text-slate-400">{e.transaction_id}</td>
-                    <td className="px-4 py-3 text-slate-300 font-semibold">{e.account_id}</td>
+                  <tr key={e.id} className="hover:bg-slate-50 dark:hover:bg-white/[0.02] transition">
+                    <td className="px-4 py-3 text-cyan-600 dark:text-cyan-400 font-semibold">{e.id}</td>
+                    <td className="px-4 py-3 text-slate-500 dark:text-slate-400">{e.transaction_id}</td>
+                    <td className="px-4 py-3 text-slate-800 dark:text-slate-300 font-semibold">{e.account_id}</td>
                     <td className="px-4 py-3">
-                      <span className="px-2 py-0.5 rounded text-[10px] bg-slate-800 text-slate-300 border border-white/5">
+                      <span className="px-2 py-0.5 rounded text-[10px] bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-white/5">
                         {e.entry_type}
                       </span>
                     </td>
                     <td className="px-4 py-3">
                       <span
                         className={`px-2 py-0.5 rounded text-[10px] font-bold ${
-                          isDebit ? 'bg-rose-500/10 text-rose-400 border border-rose-500/30' : 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/30'
+                          isDebit ? 'bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-500/30' : 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30'
                         }`}
                       >
                         {e.direction}
                       </span>
                     </td>
-                    <td className={`px-4 py-3 font-bold ${isDebit ? 'text-rose-400' : 'text-emerald-400'}`}>
+                    <td className={`px-4 py-3 font-bold ${isDebit ? 'text-rose-600 dark:text-rose-400' : 'text-emerald-600 dark:text-emerald-400'}`}>
                       {isDebit ? '-' : '+'}{(e.amount_base_units / 100).toLocaleString('en-US', { minimumFractionDigits: 2 })} {e.asset}
                     </td>
-                    <td className="px-4 py-3 font-sans text-slate-300 max-w-xs truncate">{e.description}</td>
-                    <td className="px-4 py-3 text-slate-500">
+                    <td className="px-4 py-3 font-sans text-slate-700 dark:text-slate-300 max-w-xs truncate">{e.description}</td>
+                    <td className="px-4 py-3 text-slate-400 dark:text-slate-500">
                       {new Date(e.timestamp).toLocaleTimeString()}
                     </td>
                   </tr>
