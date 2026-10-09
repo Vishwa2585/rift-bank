@@ -1,5 +1,5 @@
 // Web NFC API Integration for RIFT KEY Hardware MFA
-// FUSION 2026 Hackathon - Real Physical NFC Hardware Verification
+// FUSION 2026 Hackathon - Real Physical NFC Hardware Verification & Tag Writing
 
 export interface NFCReadResult {
   supported: boolean;
@@ -16,6 +16,7 @@ export const nfcService = {
     return typeof window !== 'undefined' && 'NDEFReader' in window;
   },
 
+  // READ Physical NFC Tag using Browser NDEFReader API
   async readPhysicalNFCTag(): Promise<NFCReadResult> {
     const timestamp = new Date().toISOString();
 
@@ -24,7 +25,7 @@ export const nfcService = {
         supported: false,
         success: false,
         payload: '',
-        message: 'Web NFC API is not supported by this browser/device. (Requires Android with Chrome / Web NFC enabled over HTTPS).',
+        message: 'Web NFC API is not supported by this browser/device. (Requires Chrome on Android over HTTPS).',
         timestamp
       };
     }
@@ -40,7 +41,7 @@ export const nfcService = {
             supported: true,
             success: false,
             payload: '',
-            message: 'NFC Scan timed out after 15 seconds. Please tap your physical tag closer to the NFC sensor.',
+            message: 'NFC Scan timed out after 15 seconds. Please hold your physical card closer to the NFC sensor.',
             timestamp: new Date().toISOString()
           });
         }, 15000);
@@ -63,7 +64,7 @@ export const nfcService = {
             success: true,
             payload: readText || 'RIFT-KEY:DEMO-01',
             serialNumber: serialNumber || 'NFC-SERIAL-7749201',
-            message: 'Physical NFC tag successfully read.',
+            message: 'Physical NFC tag successfully read from browser.',
             timestamp: new Date().toISOString()
           });
         });
@@ -74,7 +75,7 @@ export const nfcService = {
             supported: true,
             success: false,
             payload: '',
-            message: 'NFC Reading Error. Could not decode tag records.',
+            message: 'NFC Reading Error. Could not decode tag NDEF records.',
             timestamp: new Date().toISOString()
           });
         });
@@ -90,6 +91,50 @@ export const nfcService = {
     }
   },
 
+  // WRITE Physical NFC Tag using Browser NDEFReader API
+  async writePhysicalNFCTag(payload: string = 'RIFT-KEY:DEMO-01'): Promise<NFCReadResult> {
+    const timestamp = new Date().toISOString();
+
+    if (!this.isWebNFCSupported()) {
+      return {
+        supported: false,
+        success: false,
+        payload,
+        message: 'Web NFC API is not supported on this device. (Requires Chrome on Android over HTTPS).',
+        timestamp
+      };
+    }
+
+    try {
+      // @ts-ignore - NDEFReader API write method
+      const ndef = new window.NDEFReader();
+      await ndef.write({
+        records: [
+          {
+            recordType: 'text',
+            data: payload
+          }
+        ]
+      });
+
+      return {
+        supported: true,
+        success: true,
+        payload,
+        message: `Successfully written NDEF payload '${payload}' to physical NFC card/tag!`,
+        timestamp
+      };
+    } catch (err: any) {
+      return {
+        supported: true,
+        success: false,
+        payload,
+        message: err.message || 'Failed to write NFC payload. Ensure physical card is held against the device sensor.',
+        timestamp
+      };
+    }
+  },
+
   // Fallback demo hardware tag trigger (Clearly labelled SIMULATED KEY FALLBACK)
   triggerSimulatedKeyTap(): NFCReadResult {
     return {
@@ -97,7 +142,19 @@ export const nfcService = {
       success: true,
       payload: 'RIFT-KEY:DEMO-01',
       serialNumber: 'NFC-HW-SIM-8849102',
-      message: 'ENROLLED DEMO HARDWARE KEY TAP (Fallback mode for non-NFC browsers)',
+      message: 'ENROLLED DEMO HARDWARE KEY TAP (Fallback mode for desktop browsers)',
+      timestamp: new Date().toISOString(),
+      isSimulatedFallback: true
+    };
+  },
+
+  triggerSimulatedKeyWrite(payload: string = 'RIFT-KEY:DEMO-01'): NFCReadResult {
+    return {
+      supported: false,
+      success: true,
+      payload,
+      serialNumber: 'NFC-HW-SIM-8849102',
+      message: `ENROLLED DEMO HARDWARE KEY PROVISIONED (Simulated NFC Write: '${payload}')`,
       timestamp: new Date().toISOString(),
       isSimulatedFallback: true
     };

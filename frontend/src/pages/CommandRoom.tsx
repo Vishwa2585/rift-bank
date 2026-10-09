@@ -74,6 +74,8 @@ export const CommandRoom: React.FC = () => {
     refreshState();
   };
 
+  const [nfcWriting, setNfcWriting] = useState(false);
+
   // Real Web NFC API scan handler
   const handlePhysicalNFCScan = async () => {
     setNfcScanning(true);
@@ -87,6 +89,23 @@ export const CommandRoom: React.FC = () => {
       riftEngine.addAuditAction(
         'PHYSICAL_NFC_READ',
         `Read physical NFC tag payload: '${result.payload}'. Serial: ${result.serialNumber || 'N/A'}`
+      );
+    }
+  };
+
+  // Real Web NFC API write handler (NDEFReader.write)
+  const handlePhysicalNFCWrite = async () => {
+    setNfcWriting(true);
+    setNfcResult(null);
+
+    const result = await nfcService.writePhysicalNFCTag('RIFT-KEY:DEMO-01');
+    setNfcResult(result);
+    setNfcWriting(false);
+
+    if (result.success) {
+      riftEngine.addAuditAction(
+        'PHYSICAL_NFC_WRITE',
+        `Wrote NDEF payload 'RIFT-KEY:DEMO-01' to physical NFC card.`
       );
     }
   };
@@ -382,18 +401,27 @@ export const CommandRoom: React.FC = () => {
             <div className="space-y-2 pt-2">
               <button
                 onClick={handlePhysicalNFCScan}
-                disabled={nfcScanning}
+                disabled={nfcScanning || nfcWriting}
                 className="w-full py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-semibold text-xs shadow-md transition flex items-center justify-center space-x-2 disabled:opacity-50"
               >
                 <Cpu className="w-4 h-4" />
-                <span>{nfcScanning ? 'Tap Physical NFC Tag Now...' : 'TAP PHYSICAL NFC TAG'}</span>
+                <span>{nfcScanning ? 'Reading Physical NFC Tag...' : 'READ PHYSICAL NFC TAG'}</span>
+              </button>
+
+              <button
+                onClick={handlePhysicalNFCWrite}
+                disabled={nfcScanning || nfcWriting}
+                className="w-full py-2 rounded-xl bg-purple-500/15 hover:bg-purple-500/25 border border-purple-500/30 text-purple-700 dark:text-purple-300 font-semibold text-xs transition flex items-center justify-center space-x-2 disabled:opacity-50"
+              >
+                <KeyRound className="w-3.5 h-3.5" />
+                <span>{nfcWriting ? 'Hold NFC Tag to Phone to Write...' : 'WRITE RIFT KEY TO NFC CARD'}</span>
               </button>
 
               <button
                 onClick={handleFallbackNFCTap}
                 className="w-full py-2 rounded-xl bg-slate-100 dark:bg-white/10 hover:bg-slate-200 dark:hover:bg-white/15 text-slate-700 dark:text-slate-300 font-medium text-xs transition"
               >
-                Simulate Enrolled Hardware Key Tap
+                Simulate Hardware Key Tap (Desktop)
               </button>
             </div>
           </GlassCard>
