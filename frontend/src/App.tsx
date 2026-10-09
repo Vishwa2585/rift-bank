@@ -70,6 +70,15 @@ export const App: React.FC = () => {
     return () => clearInterval(interval);
   }, []);
 
+  // Apply dark class to <html> so Tailwind dark: variants work everywhere
+  useEffect(() => {
+    if (isDarkMode) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  }, [isDarkMode]);
+
   const handleInitTransfer = (cId: string, accId: string) => {
     setInitialTransferClientId(cId);
     setInitialTransferAccountId(accId);
@@ -95,7 +104,7 @@ export const App: React.FC = () => {
   };
 
   return (
-    <div className={`min-h-screen ${isDarkMode ? 'dark bg-[#07090e] text-slate-100' : 'bg-slate-50 text-slate-900'} transition-colors duration-200 flex flex-col`}>
+    <div className="min-h-screen bg-slate-50 dark:bg-[#07090e] text-slate-900 dark:text-slate-100 transition-colors duration-200 flex flex-col">
       {/* Permanent Tasteful Notice Banner */}
       <SimulationNoticeBanner />
 
@@ -191,7 +200,7 @@ export const App: React.FC = () => {
       </main>
 
       {/* Footer - Full Screen Width */}
-      <footer className="border-t border-white/10 bg-[#07090e]/90 backdrop-blur-md py-4 text-center text-xs text-slate-500 font-mono">
+      <footer className="border-t border-slate-200 dark:border-white/10 bg-white/90 dark:bg-[#07090e]/90 backdrop-blur-md py-4 text-center text-xs text-slate-400 dark:text-slate-500 font-mono">
         <div className="w-full px-3 sm:px-6 lg:px-8 xl:px-12 flex flex-col sm:flex-row items-center justify-between gap-2">
           <div>
             RIFT BANK · CSB-01 FINANCIAL SIMULATOR · DOUBLE-ENTRY LEDGER ENGINE
